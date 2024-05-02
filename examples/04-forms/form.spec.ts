@@ -6,7 +6,8 @@ import {
   applyRules,
   isFormValid,
   patientForm,
-  type Patient
+  type Patient,
+  numeric,
 } from "./form";
 
 describe("required", () => {
@@ -24,6 +25,21 @@ describe("required", () => {
   });
   it("returns true false value is present", () => {
     expect(required("some value")).toEqual({ valid: true });
+  });
+});
+
+describe("numeric", () => {
+  it("is invalid when a non-numeric string", () => {
+    expect(numeric("qwerty")).toEqual({
+      valid: false,
+      message: "Must be a number",
+    });
+  });
+  it("returns true when value is a numeric string", () => {
+    expect(numeric("12345")).toEqual({ valid: true });
+  });
+  it("returns true when value is a number", () => {
+    expect(numeric(12345)).toEqual({ valid: true });
   });
 });
 
@@ -121,6 +137,13 @@ describe("patientForm", () => {
   it("is invalid when name is null", () => {
     const form = patientForm({ ...validPatient, name: "" });
     expect(form.name).toEqual({ valid: false, message: "Required" });
+  });
+  it("is invalid when weight is not numeric", () => {
+    const form = patientForm({
+      ...validPatient,
+      weight: { value: "1i" as unknown as number, units: "kg" },
+    });
+    expect(form.weight).toEqual({ valid: false, message: "Must be a number" });
   });
   it("validates weight in imperial", () => {
     const form = patientForm({

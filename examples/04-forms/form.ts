@@ -15,6 +15,18 @@ export const required: Validator = (value: any): ValidationResult => {
   return { valid: true };
 };
 
+export const numeric: Validator = (value: any): ValidationResult => {
+  const number = Number(value);
+  if (Number.isNaN(number)) {
+    return {
+      valid: false,
+      message: `Must be a number`,
+    };
+  }
+
+  return { valid: true };
+};
+
 interface RangeRule {
   min: number;
   max: number;
@@ -33,9 +45,7 @@ export const validateRange: Validator = (
   return { valid: true };
 };
 
-export function applyRules(
-  ...results: ValidationResult[]
-): ValidationResult {
+export function applyRules(...results: ValidationResult[]): ValidationResult {
   return results.find((result) => !result.valid) ?? { valid: true };
 }
 
@@ -58,9 +68,9 @@ interface PatientFormValidity {
   weight: ValidationResult;
 }
 
-export function isFormValid<
-  T extends Record<string, ValidationResult>
->(form: T): boolean {
+export function isFormValid<T extends Record<string, ValidationResult>>(
+  form: T
+): boolean {
   const invalidField = Object.values(form).find((res) => !res.valid);
   return invalidField ? false : true;
 }
@@ -79,10 +89,8 @@ export function patientForm(patient: Patient): PatientForm {
     name: required(patient.name),
     weight: applyRules(
       required(patient.weight.value),
-      validateRange(
-        patient.weight.value,
-        limits[patient.weight.units]
-      )
+      numeric(patient.weight.value),
+      validateRange(patient.weight.value, limits[patient.weight.units])
     ),
   };
 }
