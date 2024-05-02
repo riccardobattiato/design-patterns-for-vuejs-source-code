@@ -6,7 +6,8 @@ import {
   applyRules,
   isFormValid,
   patientForm,
-} from "./form.js";
+  type Patient
+} from "./form";
 
 describe("required", () => {
   it("is invalid when undefined", () => {
