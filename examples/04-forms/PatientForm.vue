@@ -1,7 +1,7 @@
 <template>
   <div class="form-wrapper">
     <h3>Patient Data</h3>
-    <form @submit.prevent="submit">
+    <form data-testid="patient-form" @submit.prevent="submit">
       <div class="field">
         <div
           v-if="!validatedForm.name.valid"
